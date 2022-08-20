@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const SERVER = "http://127.0.0.1:8000"
+        // ---------------------------------- test if servr alive -------------------------------------------   
+        const testServer = async () => {
+            let res = await axios(SERVER)
+            console.log(res.data)
+            // shuld print hallo in consol if server alive
+        }
+
+        // ---------------------------------- login/out -------------------------------------------   
+        // log in
+        const Login = async () => {
+            let res = await axios.post("http://127.0.0.1:8000/login/", {
+                username: userNameLogIn.value,
+                password: pwdLogIn.value
+                //username: "adir",
+                //password: '1234'
+            })
+            console.log(res.data)
+            localStorage.setItem('token', res.data.access)
+        }
+
+        // log out
+        const logout = async () => {
+            await fetch("http://127.0.0.1:8000/logout",
+                { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+                .then(response => response.json())
+            localStorage.setItem('token', "-")
+        }
+
+        // add user
+        const addNewUser = async (event) => {
+            event.preventDefault()
+
+            const username_el = document.querySelector('#usernameId')
+            const emailId_el = document.querySelector('#emailId')
+            const password_el = document.querySelector('#passwordId')
+
+            let data = {
+                username: username_el.value,
+                email: emailId_el.value,
+                password: password_el.value
+                // is_staff:is_staffId.value
+            }
+            let res = await axios.post("http://127.0.0.1:8000/adduser/", data)
+            console.log(res.data)
+        }
+    
+    </script>
+
+    <!-- log in -->
+    <h2>log in </h2>
+    user name : <input id="userNameLogIn"> password : <input id="pwdLogIn" type="password"> <button
+        onclick="Login()">log in</button>
+    <hr>
+    <!-- log out -->
+    <h2>log out</h2>
+    <button onclick="logout()">log out</button>
+    <hr>
+
+    <!-- test alive -->
+    <h2>Test Server Alive</h2>
+    <button onclick="testServer()">testServer</button>
+    <hr>
+
+    <!-- addUser -->
+    <h2>Add User</h2>
+    user name : <input type="text" id="usernameId">
+    email; : <input type="email" id="emailId">
+    pwd : <input type="password" id="passwordId">
+    <!-- is staff ? <input id="is_staffId"> -->
+
+    <button onclick=addNewUser(event)> add user</button>
+    <hr>
+
+
+</body>

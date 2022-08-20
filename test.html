@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <script>
+     // ---------------------------------- login/out -------------------------------------------   
+    // log in
+    const Login = async () => {
+        let res = await axios.post("http://127.0.0.1:8000/token/", {
+            username: userNameLogIn.value,
+            password: pwdLogIn.value
+            //username: "adir",
+            //password: '1234'
+        })
+        console.log(res.data)
+        localStorage.setItem('token', res.data.access)
+    }
+    const Login2 = async () => {
+       let res = await fetch('http://127.0.0.1:8000/token/', {
+            method: "POST",
+            body: {
+                //username: userNameLogIn.value,
+                //password: pwdLogIn.value
+                username: "adir",
+                password: "1234"
+            },
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+          })
+          console.log(res.data)
+        localStorage.setItem('token', res.data.access)
+       
+    }
+    // log out
+    const logout = async () => {
+        await fetch("http://127.0.0.1:8000/logout",
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        localStorage.setItem('token'," ")
+    }
+    // add user
+    const addNewUser = () => {
+        let data = {
+            username : usernameId.value,
+            email:emailId.value,
+            password:passwordId.value ,
+            is_staff:is_staffId.value
+        }
+        fetch('http://127.0.0.1:8000/base/addUser', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+          })
+          .then(response => response.json()) 
+          .then(json => console.log(json));
+       
+    }
+    
+    // ---------------------------------- customers -------------------------------------------
+    // get customers: 
+    const getAllCustomers = async ()=> {
+            let res = await fetch('http://127.0.0.1:8000/base/customers',
+            {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+            .then(response => response.json())
+            
+            console.log(res)
+       }
+    // get one customer
+    const getCustomerById = async (id)=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/customers/${id}`,
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // add customer
+    const addNewCustomer = () => {
+        let data = {
+            userId : userIdCustomer.value,
+            firstName:firstNameCustomer.value,
+            lastName:lastNameCustomer.value,
+            gender:genderCustomer.value,
+            desc:descCustomer.value,
+            birthdate:birthdateCustomer.value,
+            address:addressCustomer.value,
+            city:cityCustomer.value,
+            phoneNumber:phoneNumberCustomer.value
+        }
+        fetch('http://127.0.0.1:8000/base/addCustomer', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+          })
+          .then(response => response.json()) 
+          .then(json => console.log(json));
+    }
+    // get customer profile who logged in
+    const getProfileCustomerLoggedIn = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/profileCustomer',
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    
+    // ---------------------------------- employees -------------------------------------------
+    // get all employees
+    const getAllEmployees = async ()=> {
+            let res = await fetch('http://127.0.0.1:8000/base/employees',
+            {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+            .then(response => response.json())
+            
+            console.log(res)
+            }
+    // get one employee
+    const getEmployeeById = async (id)=> {
+            let res = await fetch(`http://127.0.0.1:8000/base/employees/${id}`,
+            {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+            .then(response => response.json())
+            
+            console.log(res)
+            }
+    // add employee
+    const addNewEmployee = () => {
+        let data = {
+            userId : userIdEmployee.value,
+            firstName:firstNameEmployee.value,
+            lastName:lastNameEmployee.value,
+            territoryId:territoryIdEmployee.value,
+            desc:descEmployee.value,
+            profession:professionEmployee.value,
+            title:titleEmployee.value,
+            phoneNumber:phoneNumberEmployee.value
+        }
+        fetch('http://127.0.0.1:8000/base/addEmployee', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => console.log(json));
+    }  
+    // get profile employee who logged in 
+    const getProfileEmployeeLoggedIn = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/profileEmployee',
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    
+    // ---------------------------------- future orders -------------------------------------------
+    // get future orders available
+    const getFutureOrders = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/futureOrders')
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // get one future order
+    const getFutureOrderById = async (id)=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/futureOrders/${id}`)
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // add future order
+    const addNewFutureOrder = () => {
+        let data = {
+            date : dateFutureOrder.value,
+            fromHour:fromHourFutureOrder.value,
+            employeeId:employeeFutureOrder.value,
+            serviceId:serviceFutureOrder.value,
+        }
+        fetch('http://127.0.0.1:8000/base/addFutureOrder', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+          })
+          .then(response => response.json()) 
+          .then(json => console.log(json));
+    }
+    // get future order by employee ligged in
+    const getFutureOrdersLoggedUser = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/employee/futureOrders',
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+    }
+    //get all future prders (available + not available)
+    const getAllFutureOrders = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/all/futureOrders')
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // get future order by filters 'futureOrders/filters/<serviceId>/<date>/<fromTime>/<toTime>'
+    const getFutureOrderByFilters = async (serviceId=-1,date='',fromTime='',toTime='')=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/futureOrders/filters/${serviceId}/${date}/${fromTime}/${toTime}`)
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // ---------------------------------- services -------------------------------------------
+    // get all services
+    const getAllServices = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/services')
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // get one service
+    const getServiceById = async (id)=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/services/${id}`)
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // add service
+    const addNewService = () => {
+        let data = {
+            serviceName : serviceNameService.value,
+            price:priceService.value,
+            long:longService.value,
+            desc:descService.value,
+            request:requestService.value,
+        }
+        fetch('http://127.0.0.1:8000/base/addService', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => console.log(json));
+    }  
+   
+   // ---------------------------------- territories -------------------------------------------
+    // get all territories
+    const getAllTerritories = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/territories')
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // get one territories
+    const getTerritoryById = async (id)=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/territories/${id}`)
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    
+    // ---------------------------------- orders -------------------------------------------
+    // get all orders
+    const getAllOrders = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/orders',
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // get one order
+    const getOrderById = async (id)=> {
+        let res = await fetch(`http://127.0.0.1:8000/base/orders/${id}`,
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+        }
+    // add order
+    const addNewOrder = () => {
+        let data = {
+            futureOrderId : Number(futureOrderIdOrder.value),
+            customerId:Number(customerIdOrder.value)
+        }
+        fetch('http://127.0.0.1:8000/base/addOrder', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => console.log(json));
+    }     
+    //getOrdersLoggedUser
+    const getOrdersLoggedUser = async ()=> {
+        let res = await fetch('http://127.0.0.1:8000/base/user/orders',
+        {headers : {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.json())
+        
+        console.log(res)
+    }
+    </script>
+
+<!-- log in -->
+<h2>log in </h2>
+user name : <input id="userNameLogIn"> password : <input id="pwdLogIn" type="password"> <button onclick="Login()">log in</button>
+<hr>
+
+<!-- log out -->
+<h2>log out</h2>
+<button onclick="logout()">log out</button>
+<hr>
+
+<!-- customers -->
+<h2>customers</h2>
+<button onclick=getAllCustomers()> Get all customers</button>
+<hr>
+ get customer by id : <input id="customerId"> 
+ <button onclick=getCustomerById(customerId.value)> Get one customer</button>
+<hr>
+add customer : 
+<br>
+user id : <input id="userIdCustomer">
+firstName id : <input id="firstNameCustomer">
+lastName : <input id="lastNameCustomer">
+gender : <input id="genderCustomer">
+desc : <input id="descCustomer">
+birthdate : <input id="birthdateCustomer">
+address : <input id="addressCustomer">
+city : <input id="cityCustomer">
+phoneNumber : <input id="phoneNumberCustomer">
+<button onclick=addNewCustomer()>save customer</button>
+<hr>
+ <button onclick="getProfileCustomerLoggedIn()">get profile customer logged in</button>
+<hr>
+
+<!-- employee -->
+<h2>employee</h2>
+<button onclick=getAllEmployees()> Get all employees</button>
+<hr>
+ get employee by id : <input id="employeeId"> 
+ <button onclick=getEmployeeById(employeeId.value)> Get one employee</button>
+ <hr>
+ add employee: <br>
+user id : <input id="userIdEmployee">
+firstName : <input id="firstNameEmployee">
+lastName : <input id="lastNameEmployee">
+territoryId : <input id="territoryIdEmployee">
+desc : <input id="descEmployee">
+profession : <input id="professionEmployee">
+title : <input id="titleEmployee">
+phoneNumber : <input id="phoneNumberEmployee">
+<button onclick=addNewEmployee()>save emolyee</button>
+
+<hr>
+<button onclick="getProfileEmployeeLoggedIn()">get profile employee logged in</button>
+<hr>
+
+<!-- future orders  -->
+<h2>Future orders</h2>
+<button onclick=getFutureOrders()> Get future orders</button>
+<hr>
+ get future order by id : <input id="futureOrderId"> 
+ <button onclick=getFutureOrderById(futureOrderId.value)> Get one future order</button>
+<hr>
+add future order : <br>
+date : <input id="dateFutureOrder" type="date">
+fromHour : <input id="fromHourFutureOrder">
+employeeId : <input id="employeeFutureOrder">
+serviceId : <input id="serviceFutureOrder">
+<button onclick=addNewFutureOrder()>save future order</button>
+<hr>
+get future orders for employee logged in : 
+<button onclick="getFutureOrdersLoggedUser()">get future order</button>
+<hr>
+<button onclick="getAllFutureOrders()">get all future available + not available</button>
+<hr>
+get by filters
+service id : <input id="serviceFutureOrderFilter">
+date : <input id="dateFutureOrderFilter" type="date">
+from time <input id="fromTimeFutureOrderFilter">
+to time : <input id="toTimeFutureOrderFilter">
+<button onclick="getFutureOrderByFilters(serviceFutureOrderFilter.value,dateFutureOrderFilter.value,fromTimeFutureOrderFilter.value,toTimeFutureOrderFilter.value)">get future order by filters</button>
+
+<hr>
+<!-- services -->
+<h2>services</h2>
+<button onclick=getAllServices()> Get all services</button>
+<hr>
+ get services by id : <input id="servicesId"> 
+ <button onclick=getServiceById(servicesId.value)> Get one services</button>
+<hr>
+add service : <br>
+serviceName : <input id="serviceNameService">
+price : <input id="priceService">
+long : <input id="longService">
+desc : <input id="descService">
+request : <input id="requestService">
+<button onclick=addNewService()>save service</button>
+<hr>
+
+<!-- territories -->
+<h2>Territories</h2>
+<button onclick=getAllTerritories()> Get all Territories</button>
+<hr>
+ get Territory by id : <input id="territoryId"> 
+ <button onclick=getTerritoryById(territoryId.value)> Get one territory</button>
+<hr>
+
+<!-- orders -->
+<h2>Orders</h2>
+<button onclick=getAllOrders()> Get all orders</button>
+<hr>
+ get order by id : <input id="orderId"> 
+ <button onclick=getOrderById(orderId.value)> Get one order</button>
+<hr>
+add order: <br>
+futureOrderId : <input id="futureOrderIdOrder">
+customerId : <input id="customerIdOrder">
+<button onclick=addNewOrder()>save order</button>
+<hr>
+get orders for user logged in : 
+<button onclick="getOrdersLoggedUser()">get order</button>
+<hr>
+
+<!-- addUser -->
+<h2>Add User</h2>
+user name : <input id="usernameId">
+email; : <input id="emailId">
+pwd : <input id="passwordId">
+is staff ? <input id="is_staffId">
+
+<button onclick=addNewUser()> add user</button>
+<hr>
+
+<hr>
+
+</body>
+</html>
